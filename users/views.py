@@ -5,6 +5,8 @@ from django.contrib.messages import constants
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib import auth
+from .models import Cliente
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def register(request):
@@ -56,3 +58,24 @@ def login(request):
       messages.add_message(request, constants.ERROR, 'Usuário ou senha inválidos')
       return redirect('login')
     
+@login_required    
+def clientes(request):
+  if request.method == 'GET':
+    clientes = Cliente.objects.filter(user=request.user)
+    return render(request, 'clientes.html', {'clientes': clientes})
+  elif request.method == 'POST':
+    nome = request.POST.get('nome')
+    email = request.POST.get('email')
+    tipo = request.POST.get('tipo')
+    status = request.POST.get('status') == 'on'
+    
+    Cliente.objects.create(
+      nome=nome,
+      email=email,
+      tipo=tipo,
+      status=status,
+      user=request.user
+    )
+    
+    messages.add_message(request, constants.SUCCESS, 'Cliente cadastrado com sucesso!')
+    return redirect('clientes')
