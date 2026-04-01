@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from martor.models import MartorField
  
 # Create your models here.
 class Cliente(models.Model):
@@ -16,3 +17,20 @@ class Cliente(models.Model):
   
   def __str__(self):
         return self.nome
+
+class Documentos(models.Model):
+    TIPO_CHOICES = [
+        ('C', 'Contrato'),
+        ('P', 'Petição'),
+        ('CONT', 'Contestação'),
+        ('R', 'Recursos'),
+        ('O', 'Outro'),
+    ]
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=255, choices=TIPO_CHOICES, default='O')
+    arquivo = models.FileField(upload_to='documentos/')
+    data_upload = models.DateTimeField()
+    content = MartorField()
+
+    def __str__(self):
+        return self.tipo
