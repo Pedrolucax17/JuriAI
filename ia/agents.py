@@ -80,6 +80,14 @@ class JuriAI:
     - Mantenha um tom profissional e objetivo em todas as respostas.
     """
     
+  knowledge = Knowledge(
+    vector_db=LanceDb(
+      table_name=VECTOR_DB_TABLE,
+      uri=VECTOR_DB_URI,
+      embedder=OpenAIEmbedder()
+    ),
+  )
+    
   @classmethod
   def build_agent(cls, knowledge_filters: dict = {}) -> Agent:
     db = SqliteDb(
@@ -92,5 +100,8 @@ class JuriAI:
       instructions = cls.INSTRUCTIONS,
       tools=[search_datajud_api],
       db = db,
-      update_memory_on_run=True
+      update_memory_on_run=True,
+      knowledge=cls.knowledge,
+      knowledge_filters=knowledge_filters,
+      search_knowledge=True,
     )

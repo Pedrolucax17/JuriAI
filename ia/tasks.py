@@ -1,5 +1,6 @@
 from users.models import Documentos
 from django.shortcuts import get_object_or_404
+from .agents import JuriAI
 
 def ocr_and_markdown_file(instace_id):
   from docling.document_converter import DocumentConverter
@@ -13,3 +14,14 @@ def ocr_and_markdown_file(instace_id):
   
   documentos.content = texto
   documentos.save()
+  
+def rag_documentos(instance_id):
+  documentos = get_object_or_404(Documentos, id=instance_id)
+  JuriAI.knowledge.insert(
+    name=documentos.arquivo.name,
+    text_content=documentos.content,
+    metadata={
+      "cliente_id": documentos.cliente.id,
+      "name": documentos.arquivo.name,
+    },
+  )
