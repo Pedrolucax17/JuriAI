@@ -83,8 +83,6 @@ def clientes(request):
     return redirect('clientes')
   
 def cliente(request, id):
-  x = search_datajud_api('trf1', '00008323520184013202')
-  print(f'Esse é o resultado da api: {x}')
   cliente = Cliente.objects.get(id=id)
   if request.method == 'GET':
     documentos = Documentos.objects.filter(cliente=cliente)
