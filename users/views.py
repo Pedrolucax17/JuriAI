@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from django.contrib import auth
 from .models import Cliente, Documentos
 from django.contrib.auth.decorators import login_required
+from ia.agents import search_datajud_api
 
 # Create your views here.
 def register(request):
@@ -82,6 +83,8 @@ def clientes(request):
     return redirect('clientes')
   
 def cliente(request, id):
+  x = search_datajud_api('trf1', '00008323520184013202')
+  print(f'Esse é o resultado da api: {x}')
   cliente = Cliente.objects.get(id=id)
   if request.method == 'GET':
     documentos = Documentos.objects.filter(cliente=cliente)

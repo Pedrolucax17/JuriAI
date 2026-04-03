@@ -1,4 +1,4 @@
-from usuarios.models import Documentos
+from users.models import Documentos
 from django.shortcuts import get_object_or_404
 
 def ocr_and_markdown_file(instace_id):
