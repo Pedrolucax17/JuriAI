@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 from django.contrib import auth
 from .models import Cliente, Documentos
 from django.contrib.auth.decorators import login_required
-from ia.agents import search_datajud_api
+from ia.agents import JuriAI
 
 # Create your views here.
 def register(request):

@@ -1,7 +1,15 @@
 import json
-import requests 
-from .literals import TribunalLiteral
+import requests
+from agno.agent import Agent
+from agno.db.sqlite import SqliteDb
+from agno.knowledge.embedder.openai import OpenAIEmbedder
+from agno.knowledge.knowledge import Knowledge
 from agno.tools import tool
+from agno.vectordb.lancedb import LanceDb
+from .literals import TribunalLiteral
+from dotenv import load_dotenv
+
+load_dotenv()
 
 @tool
 def search_datajud_api(tribunal: TribunalLiteral, process_number: str) -> str:
@@ -43,3 +51,46 @@ def search_datajud_api(tribunal: TribunalLiteral, process_number: str) -> str:
     return response.text
   except requests.RequestException as e:
     return f'Erro: {e}'
+  
+class JuriAI:
+  
+  DATAJUD_BASE_URL = "https://api-publica.datajud.cnj.jus.br"
+  DATAJUD_API_KEY = "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
+  VECTOR_DB_TABLE = "documentos"
+  VECTOR_DB_URI = "lancedb"
+  MEMORY_DB_FILE = "db.sqlite3"
+  MEMORY_TABLE = "my_memory_table"
+  AGENT_NAME = "Assistente Jurídico Virtual"
+  AGENT_DESCRIPTION = (
+    "Assistente virtual especializado em questões jurídicas com acesso "
+    "a base de conhecimento e consulta de processos judiciais."
+  )
+
+  INSTRUCTIONS = """
+    SUAS CAPACIDADES:
+    1. Acesso a Base de Conhecimento (RAG): Você possui acesso a uma base de dados 
+       e deve usá-la para responder as perguntas do usuário de forma precisa e fundamentada.
+    2. Consulta de Processos: Você pode buscar informações sobre processos judiciais 
+       através da API do DataJud (CNJ).
+    
+    DIRETRIZES:
+    - Sempre priorize informações da base de conhecimento quando disponíveis.
+    - Ao consultar processos, forneça informações claras e organizadas.
+    - Se não tiver certeza sobre alguma informação, indique isso ao usuário.
+    - Mantenha um tom profissional e objetivo em todas as respostas.
+    """
+    
+  @classmethod
+  def build_agent(cls, knowledge_filters: dict = {}) -> Agent:
+    db = SqliteDb(
+        db_file = cls.MEMORY_DB_FILE,
+        memory_table = cls.MEMORY_TABLE,
+     )
+    return Agent(
+      name = cls.AGENT_NAME,
+      description = cls.AGENT_DESCRIPTION,
+      instructions = cls.INSTRUCTIONS,
+      tools=[search_datajud_api],
+      db = db,
+      update_memory_on_run=True
+    )
