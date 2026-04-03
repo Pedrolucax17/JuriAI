@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'martor',
     'ia',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -130,4 +131,13 @@ MEDIA_URL = '/media/'
 MESSAGE_TAGS = {
     constants.SUCCESS: 'bg-green-50 text-green-700',
     constants.ERROR: 'bg-red-50 text-red-700'
+}
+
+Q_CLUSTER = {
+    "name": "pythonando",
+    "workers": 1,
+    "retry": 200,        
+    "timeout": 180,       
+    "queue_limit": 50,
+    "orm": "default",
 }
