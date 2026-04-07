@@ -136,8 +136,8 @@ MESSAGE_TAGS = {
 Q_CLUSTER = {
     "name": "pythonando",
     "workers": 1,
-    "retry": 200,        
-    "timeout": 180,       
+    "retry": 360,        
+    "timeout": 300,       
     "queue_limit": 50,
     "orm": "default",
 }
