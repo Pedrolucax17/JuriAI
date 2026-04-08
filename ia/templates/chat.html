@@ -53,17 +53,17 @@
         </div>
     </main>
     <script>
-        document.getElementById('form-pergunta').addEventListener('submit' async function(e){
-          e.preventDefault();
-          const pergunta = document.getElementById('pergunta').value
-          const formData = new FormData();
-          formData.append('pergunta', pergunta)
-          const response = await fetch("", {
+       document.getElementById('form-pergunta').addEventListener('submit', async function(event){
+        event.preventDefault();
+        const pergunta = document.getElementById('pergunta').value
+        const formData = new FormData();
+        formData.append('pergunta', pergunta)
+        const response = await fetch("", {
             method: "POST",
             body: formData
-          })
-          const data = await response.json()
-          const perguntaId = data.id
         })
+        const data = await response.json()
+        const perguntaId = data.id
+      });
     </script>
 {% endblock 'body' %}
