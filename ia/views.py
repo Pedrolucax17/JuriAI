@@ -43,4 +43,11 @@ def stream_resposta(request):
     response['X-Accel-Buffering'] = 'no'
     
     return response
-    
+
+def ver_referencias(request, id):
+    pergunta = get_object_or_404(Pergunta, id=id)
+    contextos = ContextRag.objects.filter(pergunta=pergunta)
+    return render(request, 'ver_referencias.html', {
+        'pergunta': pergunta,
+        'contextos': contextos
+    })
