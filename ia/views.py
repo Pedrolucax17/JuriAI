@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from users.models import Cliente
-from .models import Pergunta
+from .models import Pergunta, ContextRag
 from django.http import JsonResponse, StreamingHttpResponse
 from .agents import JuriAI
 from typing import Iterator
@@ -30,6 +30,9 @@ def stream_resposta(request):
         for chunk in stream:
             if chunk.event == RunEvent.run_content:
                 yield str(chunk.content)
+            if chunk.event == RunEvent.tool_call_completed:
+                context = ContextRag(content=chunk.tool.result, tool_name=chunk.tool.tool_name, tool_args=chunk.tool.tool_args, pergunta=pergunta)
+                context.save()
     
                 
     response = StreamingHttpResponse(
