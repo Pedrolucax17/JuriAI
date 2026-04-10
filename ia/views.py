@@ -3,9 +3,9 @@ from django.views.decorators.csrf import csrf_exempt
 from users.models import Cliente, Documentos
 from .models import Pergunta, ContextRag, AnaliseJurisprudencia
 from django.http import JsonResponse, StreamingHttpResponse
-from .agents import JuriAI
+from .agents import JuriAI, SecretariaAI 
 from typing import Iterator
-from agno.agent import RunOutputEvent, RunEvent
+from agno.agent import RunOutputEvent, RunEvent, RunOutput
 from django.http import StreamingHttpResponse
 from ia.agents_langchain import JurisprudenciaAI
 from django.contrib import messages
